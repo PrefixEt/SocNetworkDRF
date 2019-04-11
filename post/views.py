@@ -14,3 +14,5 @@ class ListPostView(generics.ListAPIView):
             user_id = self.kwargs['user_id']
             queryset = queryset.filter(post__user_id=user_id)
         return queryset
+
+
