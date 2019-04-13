@@ -39,8 +39,9 @@ class CreatePost(APIView):
     def post(self, request):
         user = jwt.decode(request.auth, settings.SECRET_KEY)
         user_id = user['user_id']
+        
         serializer_data = request.data
-        serializer_data.update({'user_id': user_id})
+        serializer_data.update({'user': user_id})
         serializer = PostSerilyzer(data=serializer_data)
         serializer.is_valid(raise_exception=True)   
         serializer.save()
