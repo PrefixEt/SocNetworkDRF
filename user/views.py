@@ -31,7 +31,10 @@ def autentification_user(request):
     try:
         email = request.data['email']
         password = request.data['password']
-        user = User.objects.get(email=email, password=password)    
+        try:
+            user = User.objects.get(email=email, password=password)    
+        except:
+            user=None
         if user:
             try:
                 payload = jwt_payload_handler(user)
@@ -46,7 +49,7 @@ def autentification_user(request):
                 raise e
         else:
             res={'error':'can not authenticate'}
-            return Response(res, status=status.HTTP_403_FORBIDDEN)
+            return Response(res, status=status.HTTP_401_UNAUTHORIZED)
     except KeyError:
         res ={'error':'please provide a email and a password'}
         return Response(res)
@@ -75,3 +78,14 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
         serializer.save()
  
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny, ])
+def test_get_all_users(request):
+    try:
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        Response({'Exception': str(e)})
