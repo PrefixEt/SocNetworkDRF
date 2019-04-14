@@ -17,15 +17,15 @@ For User and Post objects, candidate is free to define attributes as they see fi
 
 **install:**
 
--git clone https://github.com/PrefixEt/SocNetworkDRF.git
+>git clone https://github.com/PrefixEt/SocNetworkDRF.git
 
--pyvenv venv
+>pyvenv venv
 
--source venv/in/activate
+>source venv/in/activate
 
--pip install -r requirement.txt
+>pip install -r requirement.txt
 
--python manage.py migrate
+>python manage.py migrate
 
 
 
