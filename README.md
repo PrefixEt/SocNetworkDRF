@@ -47,7 +47,7 @@ For User and Post objects, candidate is free to define attributes as they see fi
 
 >http://hostname:port/api/v1/post/all/
 
->http://hostname:port/api/v1/post/create/ POST create post. Need JWT auth.
+>http://hostname:port/api/v1/post/create/ POST create post. Need JWT auth. Fields title, message
 
 >http://hostname:port/api/v1/post/user/<int:user_id>/ GET return posts concrete user by id. 
 
