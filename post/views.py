@@ -17,6 +17,7 @@ from .serializers import PostSerializer, LikeSerializer
 @api_view(['GET'])
 @permission_classes([AllowAny, ])
 def get_all_posts(request):
+        # Allow any users to access this url
     try:
         posts = Posts.objects.all()
         serializer = PostSerializer(posts, many=True)
@@ -60,6 +61,8 @@ def get_likes_by_post_id(request, post_id):
 
 #class for create posts
 class CreatePost(APIView):
+    # Allow only authenticated users to access this url
+
     permission_classes = (IsAuthenticated,)
     serializer_class = PostSerializer
     
@@ -79,6 +82,7 @@ class CreatePost(APIView):
 @api_view(['POST', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated, ])
 def post_like(request, post_id): 
+    #only authenticated
     user_id = jwt.decode(request.auth, settings.SECRET_KEY)['user_id']
     try:
         post = Posts.objects.get(id=post_id)

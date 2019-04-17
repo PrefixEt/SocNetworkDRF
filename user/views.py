@@ -62,7 +62,7 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
     serializer_class = UserSerializer
  
     def get(self, request, *args, **kwargs):
-        # serializer to handle turning our `User` object into something that
+        # serializer to handle turning `User` object into something that
         # can be JSONified and sent to the client.
         serializer = self.serializer_class(request.user)
  
