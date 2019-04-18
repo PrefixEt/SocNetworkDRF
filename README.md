@@ -55,6 +55,6 @@ For User and Post objects, candidate is free to define attributes as they see fi
 
 >http://hostname:port/api/v1/post/id/<int:post_id>/ GET Return post by id
 
->http://hostname:port/api/v1/post/id/<int:post_id>/like/ POST/PUT like/un like. Need JWT auth
+>http://hostname:port/api/v1/post/id/<int:post_id>/like/ POST/PUT like/unlike. Need JWT auth
 
 >http://hostname:port/api/v1/post/id/<int:post_id>/likes_list/
