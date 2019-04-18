@@ -37,17 +37,17 @@ For User and Post objects, candidate is free to define attributes as they see fi
 
 > http://hostname:port/api/v1/user/all/  GET return all users.
  
->http://hostname:port/api/v1/user/create/  POST create new json fields: email, first_name, last_name, password 
+>http://hostname:port/api/v1/user/create/  POST create new user. Required fields: email, first_name, last_name, password 
 
->http://hostname:port/api/v1/user/update/ PUT json fields: email, first_name, last_name, password, Need JWT auth
+>http://hostname:port/api/v1/user/update/ PUT. Required fields: email, first_name, last_name, password, Need JWT auth
 
-> http://hostname:port/api/v1/user/obtain_token/ - POST autentification user. Return JWT fields: email, password
+> http://hostname:port/api/v1/user/obtain_token/ - POST autentification user. Return JWT. Required fields: email, password
 
 -**Post:**
 
 >http://hostname:port/api/v1/post/all/
 
->http://hostname:port/api/v1/post/create/ POST create post. Need JWT auth. Fields title, message
+>http://hostname:port/api/v1/post/create/ POST create post. Need JWT auth. Required fields: title, message
 
 >http://hostname:port/api/v1/post/user/<int:user_id>/ GET return posts concrete user by id. 
 
