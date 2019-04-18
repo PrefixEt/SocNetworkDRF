@@ -23,6 +23,8 @@ For User and Post objects, candidate is free to define attributes as they see fi
 
 >source venv/in/activate
 
+>pip install --upgrade pip
+
 >pip install -r requirement.txt
 
 >python manage.py migrate
