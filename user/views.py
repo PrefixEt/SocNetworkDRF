@@ -82,8 +82,16 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
 @api_view(['GET'])
 @permission_classes([AllowAny, ])
-def test_get_all_users(request):
+def get_user(request, user_id=None):
     try:
+        if user_id:
+            try:
+                user = User.objects.get(id=user_id)
+                serializer = UserSerializer(user, read_only=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except:
+                user=None
+                Response({'Exception': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

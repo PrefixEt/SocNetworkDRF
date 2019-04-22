@@ -12,10 +12,19 @@ class PostSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class LikeSerializer(serializers.ModelSerializer):   
+class UserInLikes(UserSerializer):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name')
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    user = UserInLikes(read_only=True)
+    link = serializers.HyperlinkedRelatedField(read_only=True, view_name='user-by-id', lookup_field='user_id')
+    
     class Meta:
         model = Likes
-        fields = ('user_id',)
+        fields = ('user_id', 'user', 'link')
 
 
 
