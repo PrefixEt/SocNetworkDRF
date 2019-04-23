@@ -12,12 +12,13 @@ class BaseViewTest(APITestCase):
     @staticmethod
     def create_user(*args, **kwargs):
         if kwargs['email'] and kwargs['first_name'] and kwargs['last_name'] and kwargs['password']:
-            User.objects.create(
+            user = User.objects.create(
                 email=kwargs['email'],
                 first_name=kwargs['first_name'],
                 last_name=kwargs['last_name'],
                 password=kwargs['password']
                 )
+            return user
                 
     
     def login_a_user(self, email="", password=""):
@@ -45,7 +46,7 @@ class BaseViewTest(APITestCase):
         self.create_user(email='testM1@example.com',first_name='Garry', last_name='Garrison', password='1111')
         self.create_user(email='testM2@example.com',first_name='Jeff', last_name='Jeferson', password='2222')
         self.create_user(email='testM3@example.com',first_name='Bob', last_name='Robertson', password='3333')
-        self.create_user(email='testM4@example.com',first_name='Terk', last_name='Terklton', password='4444')
+        self.terk_terklton = self.create_user(email='testM4@example.com',first_name='Terk', last_name='Terklton', password='4444')
         
 
 
@@ -66,6 +67,21 @@ class GetAllUsersTest(BaseViewTest):
         serialized = UserSerializer(expected, many=True)
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class GetUserById(BaseViewTest):
+    def test_get_user_by_id(self):
+        user_id = self.terk_terklton.id
+        user_response = self.client.get(reverse("user-by-id",  args=[user_id]))
+        serialized_test_user = UserSerializer(self.terk_terklton)
+        self.assertEqual(user_response.data, serialized_test_user.data)
+
+
+
+
+
+
+
+
 
 
 
