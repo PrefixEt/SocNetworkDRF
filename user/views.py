@@ -2,17 +2,13 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.signals import user_logged_in
 from rest_framework import viewsets
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework_jwt.utils import jwt_payload_handler, jwt
-from rest_framework.generics import RetrieveUpdateAPIView
 from api import settings
 from .serializers import UserSerializer
 from .models import User
-
-
 
 
 class UserAPIView(viewsets.ViewSet):
@@ -20,16 +16,16 @@ class UserAPIView(viewsets.ViewSet):
     serializer_class = UserSerializer
 
     def list(self, request):
-        serializer = UserSerializer(self.queryset, many=True)
+        serializer = self.serializer_class(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def retrieve(self, request, user_id, pk=None): 
         user = get_object_or_404(self.queryset, pk=user_id)
-        serializer = UserSerializer(user)
+        serializer = self.serializer_class(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        serializer = UserSerializer(request.data)
+        serializer = self.serializer_class(request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         Response(serializer.data, status.HTTP_201_CREATED)
@@ -37,7 +33,7 @@ class UserAPIView(viewsets.ViewSet):
     def update(self, request, user_id, pk=None):
         serializer_data = request.data.get('user', {})
  
-        serializer = UserSerializer(
+        serializer = self.serializer_class(
             request.user, data=serializer_data, partial=True
         )
         serializer.is_valid(raise_exception=True)

@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.signals import user_logged_in
-from rest_framework import status
+from rest_framework import status,viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -13,69 +13,46 @@ from user.models import User
 from .serializers import PostSerializer, LikeSerializer
 
 
-#simple functions for posts
-@api_view(['GET'])
-@permission_classes([AllowAny, ])
-def get_all_posts(request):
-        # Allow any users to access this url
-    try:
-        posts = Posts.objects.all()
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Exception as e:
-        Response({'Exception': str(e)})
-
-@api_view(['GET'])
-@permission_classes([AllowAny, ])
-def get_user_posts(request, user_id):
-    posts = Posts.objects.filter(user_id=user_id)
-    if posts:
-        serializer = PostSerializer(posts, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response({'error':'No posts by this user_id'}, status=status.HTTP_404_NOT_FOUND)
-
-
-@api_view(['GET'])
-@permission_classes([AllowAny, ])
-def get_post_by_id(request, post_id):
-    try:
-        post = Posts.objects.get(id=post_id)
-    except:
-        post = None
-  
-    if post:        
-        serializer = PostSerializer(post)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response({'error':'No posts by this id'}, status=status.HTTP_404_NOT_FOUND)
-
-@api_view(['GET'])
-@permission_classes([AllowAny, ])
-def get_likes_by_post_id(request, post_id):   
-    likes = Likes.objects.filter(post_id=post_id)    
-    if likes:        
-        serializer = LikeSerializer(likes, many= True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response({}, status=status.HTTP_200_OK)
-
-
-
-#class for create posts
-class CreatePost(APIView):
-    # Allow only authenticated users to access this url
-
-    permission_classes = (IsAuthenticated,)
+class PostAPIView(viewsets.ViewSet):
+    queryset = Posts.objects.all()
     serializer_class = PostSerializer
-    
 
-    def post(self, request):
+    def list(self, request):
+        serializer = self.serializer_class(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, post_id=None, pk=None):
+        post = get_object_or_404(self.queryset, pk=post_id)
+        serializer = self.serializer_class(post)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
         user = jwt.decode(request.auth, settings.SECRET_KEY)
         user_id = user['user_id']        
         serializer_data = request.data
         serializer_data.update({'user': user_id})
-        serializer = PostSerializer(data=serializer_data)
+        serializer = self.serializer_class(data=serializer_data)
         serializer.is_valid(raise_exception=True)   
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get_permissions(self):
+        if self.action in ('update', 'create'):
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class UserPostApi(viewsets.ViewSet):
+    permission_classes = (AllowAny,)
+    serializer_class = PostSerializer    
+
+    def retrieve(self, user_id, request):
+        queryset = Posts.objects.filter(user_id=user_id)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
    
 
 #like/unlike funcrional
@@ -106,5 +83,15 @@ def post_like(request, post_id):
         return Response({'Like':
         {'user_id':user_id,'post_id':post_id}
         })
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny, ])
+def get_likes_by_post_id(request, post_id):   
+    likes = Likes.objects.filter(post_id=post_id)    
+    if likes:        
+        serializer = LikeSerializer(likes, many= True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response({}, status=status.HTTP_200_OK)
 
 
