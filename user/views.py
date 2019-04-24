@@ -25,10 +25,10 @@ class UserAPIView(viewsets.ViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        serializer = self.serializer_class(request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        Response(serializer.data, status.HTTP_201_CREATED)
+        Response({'Info':'User created'}, status.HTTP_201_CREATED)
 
     def update(self, request, user_id, pk=None):
         serializer_data = request.data.get('user', {})

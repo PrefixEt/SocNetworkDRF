@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserPostApi, PostAPIView, post_like,get_likes_by_post_id
+from .views import UserPostApi, PostAPIView, post_like, get_likes_by_post_id
 
 urlpatterns=[
     path('all/', PostAPIView.as_view({'get':'list'}), name='posts-all'),
