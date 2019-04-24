@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.signals import user_logged_in
-
+from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -14,15 +14,42 @@ from .models import User
 
 
 
-class CreateUsersAPIView(APIView):
-    permission_classes = (AllowAny,)
-    def post(self, request):
-        user = request.data
-        serializer = UserSerializer(data=user)
+
+class UserAPIView(viewsets.ViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def list(self, request):
+        serializer = UserSerializer(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, user_id, pk=None): 
+        user = get_object_or_404(self.queryset, pk=user_id)
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        serializer = UserSerializer(request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        Response(serializer.data, status.HTTP_201_CREATED)
+
+    def update(self, request, user_id, pk=None):
+        serializer_data = request.data.get('user', {})
+ 
+        serializer = UserSerializer(
+            request.user, data=serializer_data, partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save() 
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
+    def get_permissions(self):
+        if self.action == 'update':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
 
 
 @api_view(['POST'])
@@ -53,47 +80,3 @@ def autentification_user(request):
     except KeyError:
         res ={'error':'please provide a email and a password'}
         return Response(res)
-        
-
-class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
- 
-    # Allow only authenticated users to access this url
-    permission_classes = (IsAuthenticated,)
-    serializer_class = UserSerializer
- 
-    def get(self, request, *args, **kwargs):
-        # serializer to handle turning `User` object into something that
-        # can be JSONified and sent to the client.
-        serializer = self.serializer_class(request.user)
- 
-        return Response(serializer.data, status=status.HTTP_200_OK)
- 
-    def put(self, request, *args, **kwargs):
-        serializer_data = request.data.get('user', {})
- 
-        serializer = UserSerializer(
-            request.user, data=serializer_data, partial=True
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
- 
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@permission_classes([AllowAny, ])
-def get_user(request, user_id=None):
-    try:
-        if user_id:
-            try:
-                user = User.objects.get(id=user_id)
-                serializer = UserSerializer(user, read_only=True)
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            except:
-                user=None
-                Response({'Exception': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    except Exception as e:
-        Response({'Exception': str(e)})
