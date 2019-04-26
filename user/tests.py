@@ -68,7 +68,7 @@ class GetAllUsersTest(BaseViewTest):
         self.assertEqual(response.data, serialized.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-class GetUserById(BaseViewTest):
+class GetUserByIdTest(BaseViewTest):
     def test_get_user_by_id(self):
         user_id = self.terk_terklton.id
         user_response = self.client.get(reverse("user-by-id",  args=[user_id]))
@@ -76,17 +76,23 @@ class GetUserById(BaseViewTest):
         self.assertEqual(user_response.data, serialized_test_user.data)
 
 
-
-
-
-
-
-
-
-
-
-
-
+class SignUpUserTest(BaseViewTest):
+    def test_create(self):
+        test_sign_up_data = {
+            "email":"UnitTestUser@example.com",
+            "first_name":"Mitchel",
+            "last_name":"Mitchelson",
+            "password":"asdfg",
+            }
+        email = test_sign_up_data['email']
+        response = self.client.post(
+            reverse('user-create'),
+            data=json.dumps(test_sign_up_data),
+            content_type="application/json" 
+             )
+        test_user = User.objects.get(email=email)
+        serialize_test_data = UserSerializer(test_user)
+        self.assertEqual(response.data, serialize_test_data.data)
 
 
 class AuthLoginUserTest(BaseViewTest):

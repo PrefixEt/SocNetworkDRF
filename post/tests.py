@@ -83,9 +83,10 @@ class CreatePostTest(BaseViewTest):
             
         )
         post_id = response.data['id']
-        post_response = self.client.get(reverse("post-by-id",  args=[post_id]))
+        testing_post = Posts.objects.get(id=post_id)
+        post_response = PostSerializer(testing_post)
         self.assertEqual(response.data, post_response.data)
-        self.assertEqual(post_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 

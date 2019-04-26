@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.signals import user_logged_in
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
@@ -27,8 +28,10 @@ class UserAPIView(viewsets.ViewSet):
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        Response({'Info':'User created'}, status.HTTP_201_CREATED)
+        instance = serializer.save()
+        instance.set_password(instance.password)
+        instance.save()
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
     def update(self, request, user_id, pk=None):
         serializer_data = request.data.get('user', {})
@@ -56,7 +59,7 @@ def autentification_user(request):
         password = request.data['password']
         try:
             user = User.objects.get(email=email, password=password)    
-        except:
+        except ObjectDoesNotExist:
             user=None
         if user:
             try:

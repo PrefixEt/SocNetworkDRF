@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.signals import user_logged_in
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status,viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -63,15 +64,14 @@ def post_like(request, post_id):
     user_id = jwt.decode(request.auth, settings.SECRET_KEY)['user_id']
     try:
         post = Posts.objects.get(id=post_id)
-    except:
-        post= None
+    except ObjectDoesNotExist:
+        return Response({'Error':'Not post by this id'}, status.HTTP_400_BAD_REQUEST)
+
     try:
-        like = Likes.objects.get(user_id=user_id, post_id=post_id)
-        
-    except:
+        like = Likes.objects.get(user_id=user_id, post_id=post_id)        
+    except ObjectDoesNotExist:
         like = None
-    if not post:
-        return Response({'Error':'Not post by this id'})
+        
     if like:
         like.delete()
         return Response({'Unlike':
