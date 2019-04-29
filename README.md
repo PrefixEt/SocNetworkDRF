@@ -49,11 +49,11 @@ POST http://hostname:port/api/v1/user/login - autentification user. Return JWT. 
 ```
 
 
-```
+
 -**Post:**
 
+```
 GET http://hostname:port/api/v1/post/post_manager return all posts
-
 
 POST http://hostname:port/api/v1/post/post_manager  create post. Need JWT auth. Required fields: title, message
 
