@@ -16,15 +16,16 @@ class UserAPIView(viewsets.ViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
     def list(self, request):
         serializer = self.serializer_class(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def retrieve(self, request, user_id, pk=None): 
-        user = get_object_or_404(self.queryset, pk=user_id)
+    
+    def retrieve(self, request, user_id=None, pk=None): 
+        user = get_object_or_404(self.queryset, pk=pk)
         serializer = self.serializer_class(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
+    
     def create(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -33,7 +34,7 @@ class UserAPIView(viewsets.ViewSet):
         instance.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
 
-    def update(self, request, user_id, pk=None):
+    def update(self, request, user_id=None, pk=None):
         serializer_data = request.data.get('user', {})
  
         serializer = self.serializer_class(

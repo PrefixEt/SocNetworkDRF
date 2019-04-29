@@ -22,8 +22,8 @@ class PostAPIView(viewsets.ViewSet):
         serializer = self.serializer_class(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def retrieve(self, request, post_id=None, pk=None):
-        post = get_object_or_404(self.queryset, pk=post_id)
+    def retrieve(self, request, pk=None):
+        post = get_object_or_404(self.queryset, pk=pk)
         serializer = self.serializer_class(post)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

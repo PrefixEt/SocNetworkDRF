@@ -52,11 +52,6 @@ class BaseViewTest(APITestCase):
 class GetAllPostsTest(BaseViewTest):
 
     def test_get_all_posts(self):
-        """
-        This test ensures that all Users added in the setUp method
-        exist when we make a GET request to the user/ endpoint
-        """
-        # hit the API endpoint
         response = self.client.get(
             reverse("posts-all")
         )

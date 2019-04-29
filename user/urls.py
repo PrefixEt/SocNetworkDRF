@@ -2,10 +2,22 @@ from django.urls import path
 from rest_framework_jwt.views import obtain_jwt_token
 from .views import UserAPIView, autentification_user
 
+
+user_list = UserAPIView.as_view({
+    'get': 'list',
+    'post': 'create',
+})
+
+
+user_detail = UserAPIView.as_view({
+    'get': 'retrieve', 
+    'put':'update'  
+})
+
 urlpatterns=[
-    path('all/', UserAPIView.as_view({'get':'list'}), name='user-all'),
-    path('id/<int:user_id>', UserAPIView.as_view({'get':'retrieve'}), name='user-by-id'),
-    path('create/', UserAPIView.as_view({'post':'create'}), name='user-create'),
-    path('id/<int:user_id>/update/', UserAPIView.as_view({'put':'update'}), name='user-update'),
-    path('obtain_token/', autentification_user, name='auth-login') 
+    path('user-manager', user_list, name='user-all'),
+    path('user-manager', user_list, name='user-create'),
+    path('user-manager/<int:pk>', user_detail, name='user-by-id'),    
+    path('user-manager/<int:pk>', user_detail, name='user-update'),
+    path('login', autentification_user, name='auth-login') 
 ]

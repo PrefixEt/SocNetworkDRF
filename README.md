@@ -36,25 +36,32 @@ For User and Post objects, candidate is free to define attributes as they see fi
 **Endpoint List:**
 
 -**User:**
+```
+GET http://hostname:port/api/v1/user/user_manager return list  all users.
 
-> http://hostname:port/api/v1/user/all/  GET return all users.
+GET http://hostname:port/api/v1/user/user_manager/<user_id> return user data by user id. Required fields: email, first_name, last_name, password, Need JWT auth
  
->http://hostname:port/api/v1/user/create/  POST create new user. Required fields: email, first_name, last_name, password 
+POST http://hostname:port/api/v1/user/user_manager create new user. Required fields: email, first_name, last_name, password 
 
->http://hostname:port/api/v1/user/update/ PUT. Required fields: email, first_name, last_name, password, Need JWT auth
+PUT http://hostname:port/api/v1/user/user_manager/<user_id> update user data Required fields: email, first_name, last_name, password, Need JWT auth
 
-> http://hostname:port/api/v1/user/obtain_token/ - POST autentification user. Return JWT. Required fields: email, password
+POST http://hostname:port/api/v1/user/login - autentification user. Return JWT. Required fields: email, password
+```
 
+
+```
 -**Post:**
 
->http://hostname:port/api/v1/post/all/
+GET http://hostname:port/api/v1/post/post_manager return all posts
 
->http://hostname:port/api/v1/post/create/ POST create post. Need JWT auth. Required fields: title, message
 
->http://hostname:port/api/v1/post/user/<int:user_id>/ GET return posts concrete user by id. 
+POST http://hostname:port/api/v1/post/post_manager  create post. Need JWT auth. Required fields: title, message
 
->http://hostname:port/api/v1/post/id/<int:post_id>/ GET Return post by id
+GET http://hostname:port/api/v1/post/user_id/<int:user_id>  return posts concrete user by user id. 
 
->http://hostname:port/api/v1/post/id/<int:post_id>/like/ POST/PUT like/unlike. Need JWT auth
+GET http://hostname:port/api/v1/post/post_manager/id/<int:post_id>  Return post by id
 
->http://hostname:port/api/v1/post/id/<int:post_id>/likes_list/
+POST/PUT  http://hostname:port/api/v1/post/post_manager/id/<int:post_id>/likelike/unlike. Need JWT auth
+
+GET http://hostname:port/api/v1/post/post_manager/id/<int:post_id>/likes_list return list of users who likes this post
+```

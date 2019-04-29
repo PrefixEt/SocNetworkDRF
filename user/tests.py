@@ -56,7 +56,6 @@ class GetAllUsersTest(BaseViewTest):
     def test_get_all_users(self):
         """
         This test ensures that all Users added in the setUp method
-        exist when we make a GET request to the user/ endpoint
         """
         # hit the API endpoint
         response = self.client.get(
@@ -97,7 +96,7 @@ class SignUpUserTest(BaseViewTest):
 
 class AuthLoginUserTest(BaseViewTest):
     """
-    Tests for the auth/login/ endpoint
+    Tests for the auth/login endpoint
     """
 
     def test_login_user_with_valid_credentials(self):
