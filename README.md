@@ -21,7 +21,7 @@ For User and Post objects, candidate is free to define attributes as they see fi
 
 >pyvenv venv
 
->source venv/in/activate
+>source venv/bin/activate
 
 >pip install --upgrade pip
 
