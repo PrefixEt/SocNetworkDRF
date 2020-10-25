@@ -10,7 +10,6 @@ from rest_framework_jwt.utils import jwt_payload_handler, jwt
 from rest_framework.generics import RetrieveUpdateAPIView
 from api import settings
 from .models import Posts, Likes
-from user.models import User
 from .serializers import PostSerializer, LikeSerializer
 
 

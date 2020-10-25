@@ -30,18 +30,27 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'user',
-    'post'
+DJANGO_NATIVE_APPS = ['django.contrib.admin',
+                      'django.contrib.auth',
+                      'django.contrib.contenttypes',
+                      'django.contrib.sessions',
+                      'django.contrib.messages',
+                      'django.contrib.staticfiles',
+                      'django.contrib.sites',
+                      ]
 
-]
+
+THIRD_PARTY_PACKAGES = ['rest_framework',
+                        'rest_framework.authtoken',
+                        'rest_auth',
+                        'allauth']
+
+CUSTOM_APPS = ['users',
+               'posts']
+
+INSTALLED_APPS = DJANGO_NATIVE_APPS + THIRD_PARTY_PACKAGES + CUSTOM_APPS
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -55,10 +64,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'api.urls'
 
+TEMPLATES_ROOT = os.path.join(BASE_DIR, 'templates')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_ROOT],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,11 +77,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'api.wsgi.application'
 
@@ -78,13 +89,12 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
+DATABASES ={
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -125,7 +135,17 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3000),
 }
 
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'users.User'
+
+
+# DJANGO REST FRAMEWORK
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+
 REST_FRAMEWORK = {
      'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
@@ -134,13 +154,43 @@ REST_FRAMEWORK = {
      ),
 
    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.AllowAny'
-    ), 
+       'rest_framework.permissions.IsAuthenticated'),
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+             'django.contrib.auth.backends.ModelBackend',
+             'allauth.account.auth_backends.AuthenticationBackend'
     ),
 }
+
+# django-rest-auth settings
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'users.serializers.UserSerializer'
+}
+
+# set it to True if you want to have old password verification
+# on password change enpoint (default: False)
+OLD_PASSWORD_FIELD_ENABLED = True
+
+JWT_AUTH = {
+    'JWT_ALLOW_REFRESH': True,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=3),
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
+}
+
+# enable JWT
+REST_USE_JWT = True
+
+# django allauth settings
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USER_EMAIL_FIELD = 'email'
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 

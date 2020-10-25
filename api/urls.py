@@ -15,12 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
-
-
+from rest_auth.registration.views import SocialAccountListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/user/', include('user.urls')),
-    path('api/v1/post/', include('post.urls'))
+    path('api/v1/authentication/', include('users.authentication_urls')),
+
+    path('api/v1/social_authentication/social_accounts/', SocialAccountListView.as_view(), name='socialaccount_signup'),
+    path('api/v1/social_authentication/', include('users.social_accounts_urls')),
+
+    path('api/v1/registration/', include('rest_auth.registration.urls')),
+
+    path('api/v1/users/', include('users.urls')),
+    path('api/v1/posts/', include('posts.urls'))
 ]

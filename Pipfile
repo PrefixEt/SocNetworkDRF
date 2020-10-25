@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+pre-commit = "*"
+django-extensions = "*"
+
+[packages]
+django = "*"
+djangorestframework = "*"
+django-rest-auth = "*"
+django-allauth = "*"
+psycopg2 = "*"
+rest-framework-jwt = "*"
+djangorestframework-jwt = "*"
+
+[requires]
+python_version = "3.8"

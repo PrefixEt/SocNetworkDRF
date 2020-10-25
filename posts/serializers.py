@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from user.models import User
-from user.serializers import UserSerializer
+from users.models import User
+from users.serializers import UserSerializer
 
 from .models import Posts, Likes
 

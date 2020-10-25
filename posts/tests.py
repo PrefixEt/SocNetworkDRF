@@ -2,7 +2,7 @@ import json
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.views import status
-from user.models import User
+from users.models import User
 from .models import Posts, Likes
 from .serializers import PostSerializer, LikeSerializer
 

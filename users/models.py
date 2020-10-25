@@ -1,14 +1,10 @@
 from django.db import models, transaction
-from django.contrib.auth.hashers import make_password
 from django.utils import timezone
-from django.contrib.auth.models import (
-    AbstractBaseUser, PermissionsMixin
-)
-
 from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, BaseUserManager
 )
- 
+
+
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, **extra_fields):
         """
